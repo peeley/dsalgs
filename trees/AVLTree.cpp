@@ -9,12 +9,14 @@ using std::endl;
 template<typename T>
 class AVLTree {
     public:
-        AVLTree(T v): value(v), parent(nullptr), left(nullptr), right(nullptr){}
+        AVLTree(const T& v): value(v), parent(nullptr), left(nullptr), 
+                             right(nullptr) {}
         T getValue() const{
             return value;
         }
-        T insert(T val){
+        T insert(const T& val){
             auto newTree = make_shared<AVLTree<T>>(val);
+            newTree->parent = shared_ptr<AVLTree<T>>(this);
             if(val < value){
                 left = newTree;
             }
@@ -43,11 +45,18 @@ class AVLTree {
             return right;
         }
         void rotateLeft(){
-            cout << "here";
-            auto tempP = parent;
-            parent = parent ? parent->getParent() : nullptr;
-            parent->right = left;
+            cout << "here" << endl;
+            shared_ptr<AVLTree<T>> tempP = parent;
+            parent = tempP->getParent();
+            cout << "here" << endl;
+            if(parent != nullptr){
+                parent->right = shared_ptr<AVLTree<T>>(this);
+            }
+            tempP->right = left;
+            cout << "here" << endl;
             left = tempP;
+            left->parent = shared_ptr<AVLTree<T>>(this);
+            cout << "here" << endl;
         }
         void rotateRight(){
             auto tempP = parent;
@@ -58,7 +67,7 @@ class AVLTree {
 
     private:
         T value;
-        shared_ptr<AVLTree> parent;
-        shared_ptr<AVLTree> left;
-        shared_ptr<AVLTree> right;
+        shared_ptr<AVLTree<T>> parent;
+        shared_ptr<AVLTree<T>> left;
+        shared_ptr<AVLTree<T>> right;
 };
