@@ -85,11 +85,22 @@ class AVLTree {
             return temp;
         }
         AVLTree* rotateRight(){
-            AVLTree<T>* temp = right;
+            AVLTree<T>* temp = left;
+            left = temp->right;
+            if(temp->right){
+                temp->right->parent = this;
+            }
             temp->parent = parent;
+            if(parent){
+                if(parent->left == this){
+                    parent->left = temp;
+                }
+                else{
+                    parent->right = temp;
+                }
+            }
+            temp->right = this;
             parent = temp;
-            right = temp->left;
-            temp->left = this;
             return temp;
         }
 
