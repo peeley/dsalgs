@@ -6,11 +6,13 @@ using std::endl;
 
 int main(){
     AVLTree<int> tree(5);
-    cout << tree.getValue() << endl;
-    cout << tree.getHeight() << endl;
     tree.insert(6);
-    cout << tree.getHeight() << endl;
-    cout << tree.getRight()->getValue() << endl;
-    tree.getRight()->rotateLeft();
-    cout << tree.getHeight() << endl;
+    tree.insert(4);
+    tree.insert(3);
+    tree.insert(7);
+    tree.insert(8);
+    printTree(&tree, 0);
+    cout << endl << endl;
+    tree = *(tree.rotateLeft());
+    //printTree(&tree, 0);
 }

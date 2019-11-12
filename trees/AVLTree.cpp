@@ -6,24 +6,45 @@ using std::make_shared;
 using std::cout;
 using std::endl;
 
+#include<string>
+using std::string;
+
 template<typename T>
 class AVLTree {
     public:
         AVLTree(const T& v): value(v), parent(nullptr), left(nullptr), 
                              right(nullptr) {}
+        ~AVLTree(){
+            cout << "Destructing node w/ val" << value << endl;
+            cout << "Deleting left: " << endl;
+            delete left;
+            cout << "Deleting right: " << endl;
+            delete right;
+        }
         T getValue() const{
             return value;
         }
-        T insert(const T& val){
-            auto newTree = make_shared<AVLTree<T>>(val);
-            newTree->parent = shared_ptr<AVLTree<T>>(this);
+        void insert(const T& val){
             if(val < value){
-                left = newTree;
+                if(left == nullptr){
+                    auto newTree = new AVLTree<T>(val);
+                    newTree->parent = this;
+                    left = newTree;
+                }
+                else{
+                    left->insert(val);
+                }
             }
             else {
-                right = newTree;
+                if(right == nullptr){
+                    auto newTree = new AVLTree<T>(val);
+                    newTree->parent = this;
+                    right = newTree;
+                }
+                else{
+                    right->insert(val);
+                }
             }
-            return val;
         }
         int getHeight(){
             int height = 1;
@@ -35,39 +56,65 @@ class AVLTree {
             }
             return height;
         }
-        shared_ptr<AVLTree<T>> getParent(){
+        AVLTree* getParent(){
             return parent;
         }
-        shared_ptr<AVLTree<T>> getLeft(){
+        AVLTree* getLeft(){
             return left;
         }
-        shared_ptr<AVLTree<T>> getRight(){
+        AVLTree* getRight(){
             return right;
         }
-        void rotateLeft(){
-            cout << "here" << endl;
-            shared_ptr<AVLTree<T>> tempP = parent;
-            parent = tempP->getParent();
-            cout << "here" << endl;
-            if(parent != nullptr){
-                parent->right = shared_ptr<AVLTree<T>>(this);
+        AVLTree* rotateLeft(){
+            AVLTree<T>* temp = right;
+            right = temp->left;
+            if(temp->left){
+                temp->left->parent = this;
             }
-            tempP->right = left;
-            cout << "here" << endl;
-            left = tempP;
-            left->parent = shared_ptr<AVLTree<T>>(this);
-            cout << "here" << endl;
+            temp->parent = parent;
+            if(parent){
+                if(parent->left == this){
+                    parent->left = temp;
+                }
+                else{
+                    parent->right = temp;
+                }
+            }
+            temp->left = this;
+            parent = temp;
+            return temp;
         }
-        void rotateRight(){
-            auto tempP = parent;
-            parent = parent->getParent();
-            parent->left = right;
-            right = tempP;
+        AVLTree* rotateRight(){
+            AVLTree<T>* temp = right;
+            temp->parent = parent;
+            parent = temp;
+            right = temp->left;
+            temp->left = this;
+            return temp;
         }
 
     private:
         T value;
-        shared_ptr<AVLTree<T>> parent;
-        shared_ptr<AVLTree<T>> left;
-        shared_ptr<AVLTree<T>> right;
+        AVLTree<T>* parent;
+        AVLTree<T>* left;
+        AVLTree<T>* right;
 };
+
+template<typename T>
+void printTree(AVLTree<T>* tree, int depth){
+    string padding;
+    for(auto i=0; i<depth; i++){
+        padding += " ";
+    }
+    if(!tree){
+        cout << padding << "null" << endl;
+        return;
+    }
+    cout << padding << tree->getValue();
+    auto parent = tree->getParent();
+    parent ? (cout << ", parent is " << parent->getValue() << endl) 
+        : (cout << endl);
+    padding += " ";
+    printTree(tree->getLeft(), depth+2);
+    printTree(tree->getRight(), depth+2);
+}
