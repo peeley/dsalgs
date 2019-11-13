@@ -9,12 +9,13 @@ using std::endl;
 #include<string>
 using std::string;
 
+
 template<typename T>
-class AVLTree {
+class AVLNode {
     public:
-        AVLTree(const T& v): value(v), parent(nullptr), left(nullptr), 
+        AVLNode(const T& v): value(v), parent(nullptr), left(nullptr), 
                              right(nullptr) {}
-        ~AVLTree(){
+        ~AVLNode(){
             cout << "Destructing node w/ val" << value << endl;
             cout << "Deleting left: " << endl;
             delete left;
@@ -27,7 +28,7 @@ class AVLTree {
         void insert(const T& val){
             if(val < value){
                 if(left == nullptr){
-                    auto newTree = new AVLTree<T>(val);
+                    auto newTree = new AVLNode<T>(val);
                     newTree->parent = this;
                     left = newTree;
                 }
@@ -37,7 +38,7 @@ class AVLTree {
             }
             else {
                 if(right == nullptr){
-                    auto newTree = new AVLTree<T>(val);
+                    auto newTree = new AVLNode<T>(val);
                     newTree->parent = this;
                     right = newTree;
                 }
@@ -56,17 +57,17 @@ class AVLTree {
             }
             return height;
         }
-        AVLTree* getParent(){
+        AVLNode* getParent(){
             return parent;
         }
-        AVLTree* getLeft(){
+        AVLNode* getLeft(){
             return left;
         }
-        AVLTree* getRight(){
+        AVLNode* getRight(){
             return right;
         }
-        AVLTree* rotateLeft(){
-            AVLTree<T>* temp = right;
+        AVLNode* rotateLeft(){
+            AVLNode<T>* temp = right;
             right = temp->left;
             if(temp->left){
                 temp->left->parent = this;
@@ -84,8 +85,8 @@ class AVLTree {
             parent = temp;
             return temp;
         }
-        AVLTree* rotateRight(){
-            AVLTree<T>* temp = left;
+        AVLNode* rotateRight(){
+            AVLNode<T>* temp = left;
             left = temp->right;
             if(temp->right){
                 temp->right->parent = this;
@@ -103,29 +104,46 @@ class AVLTree {
             parent = temp;
             return temp;
         }
-
     private:
         T value;
-        AVLTree<T>* parent;
-        AVLTree<T>* left;
-        AVLTree<T>* right;
+        AVLNode<T>* parent;
+        AVLNode<T>* left;
+        AVLNode<T>* right;
 };
 
 template<typename T>
-void printTree(AVLTree<T>* tree, int depth){
-    string padding;
-    for(auto i=0; i<depth; i++){
-        padding += " ";
-    }
-    if(!tree){
-        cout << padding << "null" << endl;
-        return;
-    }
-    cout << padding << tree->getValue();
-    auto parent = tree->getParent();
-    parent ? (cout << ", parent is " << parent->getValue() << endl) 
-        : (cout << endl);
-    padding += " ";
-    printTree(tree->getLeft(), depth+2);
-    printTree(tree->getRight(), depth+2);
-}
+class AVLTree{
+    public:
+        AVLTree(const T& val){
+            root = new AVLNode<T>(val);
+        }
+        ~AVLTree(){
+            delete root;
+        }
+        void insert(const T& val){
+            root->insert(val);
+        }
+        void print(){
+            printTreeRecurse(root, 0);
+        }
+    private:
+        void printTreeRecurse(AVLNode<T>* tree, int depth){
+            string padding;
+            for(auto i=0; i<depth; i++){
+                padding += " ";
+            }
+            if(!tree){
+                cout << padding << "null" << endl;
+                return;
+            }
+            cout << padding << tree->getValue();
+            auto parent = tree->getParent();
+            parent ? (cout << ", parent is " << parent->getValue() << endl) 
+                : (cout << endl);
+            padding += " ";
+            printTreeRecurse(tree->getLeft(), depth+2);
+            printTreeRecurse(tree->getRight(), depth+2);
+        }
+        AVLNode<T>* root;
+};
+

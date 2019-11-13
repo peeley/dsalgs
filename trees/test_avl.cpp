@@ -12,8 +12,6 @@ int main(){
     tree.insert(3);
     tree.insert(5);
     tree.insert(8);
-    printTree(&tree, 0);
+    tree.print();
     cout << endl << endl;
-    auto newTree = tree.rotateRight();
-    printTree(newTree, 0);
 }
