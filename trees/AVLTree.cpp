@@ -13,8 +13,8 @@ using std::string;
 template<typename T>
 class AVLNode {
     public:
-        AVLNode(const T& v): value(v), parent(nullptr), left(nullptr), 
-                             right(nullptr) {}
+        AVLNode(const T& v, AVLNode* p=nullptr): value(v), parent(p), 
+            left(nullptr), right(nullptr) {}
         ~AVLNode(){
             cout << "Destructing node w/ val" << value << endl;
             cout << "Deleting left: " << endl;
@@ -57,14 +57,25 @@ class AVLNode {
             }
             return height;
         }
+        int getBalance(){
+            auto leftHeight = left ? left->getHeight() : 0;
+            auto rightHeight = right ? right->getHeight() : 0;
+            return leftHeight - rightHeight;
+        }
         AVLNode* getParent(){
             return parent;
         }
         AVLNode* getLeft(){
             return left;
         }
+        void setLeft(AVLNode* l){
+            left = l;
+        }
         AVLNode* getRight(){
             return right;
+        }
+        void setRight(AVLNode* r){
+            right = r;
         }
         AVLNode* rotateLeft(){
             AVLNode<T>* temp = right;
@@ -115,18 +126,46 @@ template<typename T>
 class AVLTree{
     public:
         AVLTree(const T& val){
-            root = new AVLNode<T>(val);
+            root = new AVLNode<T>(val, nullptr);
         }
         ~AVLTree(){
             delete root;
         }
-        void insert(const T& val){
-            root->insert(val);
-        }
         void print(){
             printTreeRecurse(root, 0);
         }
+        void insert(const T& val){
+            print();
+            root = insert_recurse(root, val);
+        }
     private:
+        AVLNode<T>* insert_recurse(AVLNode<T>* node, const T& val){
+            if(node == nullptr){
+                return new AVLNode<T>(val, nullptr);
+            }
+            if(val < node->getValue()){
+                node->setLeft(insert_recurse(node->getLeft(), val));
+            }
+            if(val > node->getValue()){
+                node->setRight(insert_recurse(node->getLeft(), val));
+            }
+            int heightDiff = node->getBalance();
+            if(heightDiff > 1 && val < node->getLeft()->getValue()){ // left rotate
+                return node->rotateRight();
+            }
+            if(heightDiff < -1 && val < node->getRight()->getValue()){ // right rotate
+                return node->rotateLeft();
+            }
+            if(heightDiff > 1 && val > node->getLeft()->getValue()){ // left right rotate
+                node->setLeft(node->getLeft()->rotateLeft());
+                return node->rotateRight();
+            }
+            if(heightDiff < -1 && val < node->getRight()->getValue()){
+                node->setRight(node->getRight()->rotateRight());
+                return node->rotateLeft();
+            }
+            return node;
+        }
         void printTreeRecurse(AVLNode<T>* tree, int depth){
             string padding;
             for(auto i=0; i<depth; i++){
