@@ -135,7 +135,7 @@ class AVLTree{
             printTreeRecurse(root, 0);
         }
         void insert(const T& val){
-            print();
+            //print();
             root = insert_recurse(root, val);
         }
     private:
@@ -143,24 +143,24 @@ class AVLTree{
             if(node == nullptr){
                 return new AVLNode<T>(val, nullptr);
             }
-            if(val < node->getValue()){
+            else if(val < node->getValue()){
                 node->setLeft(insert_recurse(node->getLeft(), val));
             }
-            if(val > node->getValue()){
-                node->setRight(insert_recurse(node->getLeft(), val));
+            else if(val > node->getValue()){
+                node->setRight(insert_recurse(node->getRight(), val));
             }
             int heightDiff = node->getBalance();
             if(heightDiff > 1 && val < node->getLeft()->getValue()){ // left rotate
                 return node->rotateRight();
             }
-            if(heightDiff < -1 && val < node->getRight()->getValue()){ // right rotate
+            else if(heightDiff < -1 && val < node->getRight()->getValue()){ // right rotate
                 return node->rotateLeft();
             }
-            if(heightDiff > 1 && val > node->getLeft()->getValue()){ // left right rotate
+            else if(heightDiff > 1 && val > node->getLeft()->getValue()){ // left right rotate
                 node->setLeft(node->getLeft()->rotateLeft());
                 return node->rotateRight();
             }
-            if(heightDiff < -1 && val < node->getRight()->getValue()){
+            else if(heightDiff < -1 && val < node->getRight()->getValue()){
                 node->setRight(node->getRight()->rotateRight());
                 return node->rotateLeft();
             }
