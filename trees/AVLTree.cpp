@@ -46,13 +46,9 @@ class AVLNode {
         }
         int getHeight(){
             int height = 1;
-            if(left != nullptr){
-                height += left->getHeight();
-            }
-            if(right != nullptr){
-                height += right->getHeight();
-            }
-            return height;
+            int lHeight = left ? left->getHeight() : 0;
+            int rHeight = right ? right->getHeight() : 0;
+            return height + std::max(lHeight, rHeight);
         }
         int getBalance(){
             auto leftHeight = left ? left->getHeight() : 0;
@@ -135,7 +131,7 @@ class AVLTree{
             root = insert_recurse(root, val);
         }
         int getHeight(){
-            return root->getHeight();
+            return root->getHeight() - 1;
         }
         int getBalance(){
             return root->getBalance();

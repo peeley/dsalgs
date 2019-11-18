@@ -5,7 +5,7 @@ using std::endl;
 
 #include "AVLTree.cpp"
 
-const int TREE_SIZE = 15;
+const int TREE_SIZE = 60;
 
 int main(){
     srand(time(NULL));
