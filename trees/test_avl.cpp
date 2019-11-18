@@ -5,13 +5,15 @@ using std::endl;
 
 #include "AVLTree.cpp"
 
+const int TREE_SIZE = 15;
+
 int main(){
-    AVLTree<int> tree(7);
-    tree.insert(6);
-    tree.insert(4);
-    tree.insert(3);
-    tree.insert(5);
-    tree.insert(8);
+    srand(time(NULL));
+    AVLTree<int> tree(rand() % 100);
+    for(int i=0; i < TREE_SIZE; i++){
+        tree.insert(rand() % 100);
+    }
     tree.print();
-    cout << endl << endl;
+    cout << "Tree height: " << tree.getHeight() << endl;
+    cout << "Tree balance: " << tree.getBalance() << endl;
 }

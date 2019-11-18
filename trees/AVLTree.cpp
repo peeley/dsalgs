@@ -16,10 +16,7 @@ class AVLNode {
         AVLNode(const T& v, AVLNode* p=nullptr): value(v), parent(p), 
             left(nullptr), right(nullptr) {}
         ~AVLNode(){
-            cout << "Destructing node w/ val" << value << endl;
-            cout << "Deleting left: " << endl;
             delete left;
-            cout << "Deleting right: " << endl;
             delete right;
         }
         T getValue() const{
@@ -135,8 +132,13 @@ class AVLTree{
             printTreeRecurse(root, 0);
         }
         void insert(const T& val){
-            //print();
             root = insert_recurse(root, val);
+        }
+        int getHeight(){
+            return root->getHeight();
+        }
+        int getBalance(){
+            return root->getBalance();
         }
     private:
         AVLNode<T>* insert_recurse(AVLNode<T>* node, const T& val){
@@ -153,7 +155,7 @@ class AVLTree{
             if(heightDiff > 1 && val < node->getLeft()->getValue()){ // left rotate
                 return node->rotateRight();
             }
-            else if(heightDiff < -1 && val < node->getRight()->getValue()){ // right rotate
+            else if(heightDiff < -1 && val > node->getRight()->getValue()){ // right rotate
                 return node->rotateLeft();
             }
             else if(heightDiff > 1 && val > node->getLeft()->getValue()){ // left right rotate
