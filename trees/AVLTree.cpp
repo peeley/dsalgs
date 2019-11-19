@@ -58,6 +58,9 @@ class AVLNode {
         AVLNode* getParent(){
             return parent;
         }
+        void setParent(AVLNode* p){
+            parent = p;
+        }
         AVLNode* getLeft(){
             return left;
         }
@@ -135,6 +138,57 @@ class AVLTree{
         }
         int getBalance(){
             return root->getBalance();
+        }
+        void remove(const T& val){
+            auto current = root;
+            while(current != nullptr){
+                auto currVal = current->getValue();
+                if(currVal != val){
+                    if(val < currVal){
+                        current = current->getLeft();
+                    }
+                    else{
+                        current = current->getRight();
+                    }
+                }
+                else{
+                    auto parent = current->getParent();
+                    auto left = current->getLeft();
+                    auto right = current->getRight();
+                    if( !left && !right){ // node has no children
+                        if(current == parent->getLeft()){
+                            parent->setLeft(nullptr);
+                        }
+                        else{
+                            parent->setRight(nullptr);
+                        }
+                        delete current;
+                        return;
+                    }
+                    else if(left && !right){ // node has only left child
+                        if(current == parent->getLeft()){
+                            parent->setLeft(left);
+                        }
+                        else{
+                            parent->setRight(left);
+                        }
+                        left->setParent(parent);
+                        delete current;
+                        return;
+                    }
+                    else if(!left && right){ // node has only right child
+                        if(current == parent->getLeft()){
+                            parent->setLeft(right);
+                        }
+                        else{
+                            parent->setRight(right);
+                        }
+                        right->setParent(parent);
+                        delete current;
+                        return;
+                    }
+                }
+            }
         }
     private:
         AVLNode<T>* insert_recurse(AVLNode<T>* node, AVLNode<T>* lastNode, 
