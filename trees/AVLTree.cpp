@@ -128,7 +128,7 @@ class AVLTree{
             printTreeRecurse(root, 0);
         }
         void insert(const T& val){
-            root = insert_recurse(root, val);
+            root = insert_recurse(root, nullptr, val);
         }
         int getHeight(){
             return root->getHeight() - 1;
@@ -137,15 +137,16 @@ class AVLTree{
             return root->getBalance();
         }
     private:
-        AVLNode<T>* insert_recurse(AVLNode<T>* node, const T& val){
+        AVLNode<T>* insert_recurse(AVLNode<T>* node, AVLNode<T>* lastNode, 
+                                    const T& val){
             if(node == nullptr){
-                return new AVLNode<T>(val, nullptr);
+                return new AVLNode<T>(val, lastNode);
             }
             else if(val < node->getValue()){
-                node->setLeft(insert_recurse(node->getLeft(), val));
+                node->setLeft(insert_recurse(node->getLeft(), node, val));
             }
             else if(val > node->getValue()){
-                node->setRight(insert_recurse(node->getRight(), val));
+                node->setRight(insert_recurse(node->getRight(), node, val));
             }
             int heightDiff = node->getBalance();
             if(heightDiff > 1 && val < node->getLeft()->getValue()){ // left rotate
