@@ -162,6 +162,8 @@ class AVLTree{
                         else{
                             parent->setRight(nullptr);
                         }
+                        current->setLeft(nullptr);
+                        current->setRight(nullptr);
                         delete current;
                         return;
                     }
@@ -173,6 +175,8 @@ class AVLTree{
                             parent->setRight(left);
                         }
                         left->setParent(parent);
+                        current->setLeft(nullptr);
+                        current->setRight(nullptr);
                         delete current;
                         return;
                     }
@@ -184,6 +188,8 @@ class AVLTree{
                             parent->setRight(right);
                         }
                         right->setParent(parent);
+                        current->setLeft(nullptr);
+                        current->setRight(nullptr);
                         delete current;
                         return;
                     }
