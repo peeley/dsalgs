@@ -193,6 +193,9 @@ class AVLTree{
                         delete current;
                         return;
                     }
+                    else{ // node has two children
+                        // grab min val of left subtree
+                    }
                 }
             }
         }
@@ -208,6 +211,9 @@ class AVLTree{
             else if(val > node->getValue()){
                 node->setRight(insert_recurse(node->getRight(), node, val));
             }
+            return balance(node, val);
+        }
+        AVLNode<T>* balance(AVLNode<T>* node, T val){
             int heightDiff = node->getBalance();
             if(heightDiff > 1 && val < node->getLeft()->getValue()){ // left rotate
                 return node->rotateRight();
