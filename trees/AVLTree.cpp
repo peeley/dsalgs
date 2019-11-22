@@ -4,6 +4,7 @@ using std::make_shared;
 
 #include<iostream>
 using std::cout;
+using std::cin;
 using std::endl;
 
 #include<string>
@@ -141,63 +142,95 @@ class AVLTree{
         }
         void remove(const T& val){
             auto current = root;
-            while(current != nullptr){
+            while(true){
+                if(current == nullptr){
+                    return;
+                }
                 auto currVal = current->getValue();
-                if(currVal != val){
-                    if(val < currVal){
-                        current = current->getLeft();
-                    }
-                    else{
-                        current = current->getRight();
-                    }
+                if(val < currVal){
+                    current = current->getLeft();
+                }
+                else if(val > currVal){
+                    current = current->getRight();
                 }
                 else{
-                    auto parent = current->getParent();
-                    auto left = current->getLeft();
-                    auto right = current->getRight();
-                    if( !left && !right){ // node has no children
-                        if(current == parent->getLeft()){
-                            parent->setLeft(nullptr);
-                        }
-                        else{
-                            parent->setRight(nullptr);
-                        }
-                        current->setLeft(nullptr);
-                        current->setRight(nullptr);
-                        delete current;
-                        return;
-                    }
-                    else if(left && !right){ // node has only left child
-                        if(current == parent->getLeft()){
-                            parent->setLeft(left);
-                        }
-                        else{
-                            parent->setRight(left);
-                        }
-                        left->setParent(parent);
-                        current->setLeft(nullptr);
-                        current->setRight(nullptr);
-                        delete current;
-                        return;
-                    }
-                    else if(!left && right){ // node has only right child
-                        if(current == parent->getLeft()){
-                            parent->setLeft(right);
-                        }
-                        else{
-                            parent->setRight(right);
-                        }
-                        right->setParent(parent);
-                        current->setLeft(nullptr);
-                        current->setRight(nullptr);
-                        delete current;
-                        return;
-                    }
-                    else{ // node has two children
-                        // grab min val of left subtree
-                    }
+                    break;
                 }
             }
+            auto parent = current->getParent();
+            auto left = current->getLeft();
+            auto right = current->getRight();
+            AVLNode<T>* temp;
+            if( !left && !right){ // node has no children
+                cout << "No children" << endl;
+                if(current == parent->getLeft()){
+                    parent->setLeft(nullptr);
+                }
+                else{
+                    parent->setRight(nullptr);
+                }
+            }
+            else if(left && !right){ // node has only left child
+                temp = left;
+                cout << "Left children" << endl;
+                if(current == parent->getLeft()){
+                    parent->setLeft(temp);
+                }
+                else{
+                    parent->setRight(temp);
+                }
+                temp->setParent(parent);
+            }
+            else if(!left && right){ // node has only right child
+                temp = right;
+                cout << "Right children" << endl;
+                if(current == parent->getLeft()){
+                    parent->setLeft(temp);
+                }
+                else{
+                    parent->setRight(temp);
+                }
+                temp->setParent(parent);
+            }
+            else{ // node has two children
+                temp = right;
+                while(true){
+                    if(temp->getLeft() == nullptr){
+                        break;
+                    }
+                    temp = temp->getLeft();
+                }
+                cout << "Swapping " << current->getValue() << " with " << temp->getValue() << endl;
+                if(parent){
+                    if(current == parent->getLeft()){
+                        parent->setLeft(temp);
+                    }
+                    else{
+                        parent->setRight(temp);
+                    }
+                }
+                if(temp == current->getRight()){
+                    current->setRight(nullptr);
+                }
+                temp->setRight(current->getRight());
+                temp->setLeft(current->getLeft());
+                if(temp != right){
+                    temp->getParent()->setLeft(nullptr);
+                }
+                else{
+                    temp->getParent()->setRight(nullptr);
+                }
+                temp->setParent(parent);
+                cout << "Shuffled." <<endl;
+            }
+            if(current == root){
+                root = temp;
+                cout << "Reassigned root" << endl;
+            }
+            current->setLeft(nullptr);
+            current->setRight(nullptr);
+            delete current;
+            balance(root, root->getValue());
         }
     private:
         AVLNode<T>* insert_recurse(AVLNode<T>* node, AVLNode<T>* lastNode, 
@@ -232,6 +265,8 @@ class AVLTree{
             return node;
         }
         void printTreeRecurse(AVLNode<T>* tree, int depth){
+            //int x;
+            //cin >> x;
             string padding;
             for(auto i=0; i<depth; i++){
                 padding += " ";
