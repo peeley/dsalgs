@@ -18,7 +18,6 @@ class Stack{
         }
         void push(const T& val){ //push onto stack
             if(length == cap){
-                cout << "Reached capacity " << cap << ", allocating new array" << endl;
                 cap = cap*2;
                 T* newData = new T[cap];
                 for(size_t i=0; i<length; i++){
@@ -46,8 +45,6 @@ class Stack{
 
     private:
         T* data;
-        size_t head;
-        size_t tail;
         size_t cap=DEFAULT_CAP;
         size_t length = 0;
 };
