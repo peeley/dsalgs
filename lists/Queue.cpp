@@ -63,7 +63,7 @@ class Node{
         }
     private:
         T data;
-        Node<T>* next;
+        Node<T>* next = nullptr;
 };
 
 template<typename T>
@@ -71,24 +71,47 @@ class ListQueue{
     public:
         ListQueue() = default;
         ~ListQueue(){
-            delete front;
+            delete head;
         }
         void push(const T& val){
             auto newNode = new Node<T>(val);
-            back->setNext(newNode);
-            back = back->getNext();
+            if(!head){
+                head = newNode;
+            }
+            else if(!tail){
+                tail = newNode;
+                head->setNext(tail);
+            }
+            else{
+                tail->setNext(newNode);
+                tail = tail->getNext();
+            }
         }
         T front(){
-            return front->getValue();
+            return head->getValue();
+        }
+        void pop(){
+            auto newHead = head->getNext();
+            head->setNext(nullptr);
+            delete head;
+            head = newHead;
+        }
+        void print(){
+            auto current = head;
+            while(current != nullptr){
+                cout << current->getValue() << " ";
+                current = current->getNext();
+            }
+            cout << endl;
         }
     private:
-        Node<T>* front;
-        Node<T>* back;
+        Node<T>* head = nullptr;
+        Node<T>* tail = nullptr;
 };
 
 
 int main(){
-    ArrayQueue<int> q;
+    ListQueue<int> q;
     for(int i = 0; i < DEFAULT_CAP*4; i++){
         q.push(i);
     }
