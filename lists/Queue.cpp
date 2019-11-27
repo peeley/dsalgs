@@ -5,12 +5,12 @@ using std::endl;
 const size_t DEFAULT_CAP=5;
 
 template<typename T>
-class Queue{
+class ArrayQueue{
     public:
-        Queue(){
+        ArrayQueue(){
             data = new T[DEFAULT_CAP];
         }
-        ~Queue(){
+        ~ArrayQueue(){
             delete[] data;
         }
         void push(const T& val){
@@ -45,8 +45,50 @@ class Queue{
         size_t cap = DEFAULT_CAP;
 };
 
+template<typename T>
+class Node{
+    public:
+        Node(const T& val): data(val) {}
+        ~Node(){
+            delete next;
+        }
+        Node* getNext(){
+            return next;
+        }
+        void setNext(Node<T>* n){
+            next = n;
+        }
+        T getValue(){
+            return data;
+        }
+    private:
+        T data;
+        Node<T>* next;
+};
+
+template<typename T>
+class ListQueue{
+    public:
+        ListQueue() = default;
+        ~ListQueue(){
+            delete front;
+        }
+        void push(const T& val){
+            auto newNode = new Node<T>(val);
+            back->setNext(newNode);
+            back = back->getNext();
+        }
+        T front(){
+            return front->getValue();
+        }
+    private:
+        Node<T>* front;
+        Node<T>* back;
+};
+
+
 int main(){
-    Queue<int> q;
+    ArrayQueue<int> q;
     for(int i = 0; i < DEFAULT_CAP*4; i++){
         q.push(i);
     }
